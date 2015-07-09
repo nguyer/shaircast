@@ -1,0 +1,7 @@
+{
+	"groupName": "All Speakers",
+	"endpoints": [
+		"192.168.1.116",
+		"192.168.1.117"
+	]
+}

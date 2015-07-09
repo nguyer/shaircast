@@ -1,0 +1,16 @@
+{
+  "name": "shaircast",
+  "version": "0.0.1",
+  "description": "So your iPhone can play music all around your house",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nicko Guyer",
+  "license": "MIT",
+  "dependencies": {
+    "airtunes": "^0.1.7",
+    "nodetunes": "^0.1.2",
+    "speaker": "^0.2.5"
+  }
+}
