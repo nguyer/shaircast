@@ -9,7 +9,7 @@
   "author": "Nicko Guyer",
   "license": "MIT",
   "dependencies": {
-    "airtunes": "git://github.com/microadam/node_airtunes.git#master",
+    "airtunes": "git://github.com/marcokeur/node_airtunes.git#master",
     "nodetunes": "git://github.com/gpjt/nodetunes.git#master",
     "speaker": "^0.3.0"
   }
