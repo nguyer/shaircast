@@ -1,6 +1,6 @@
 {
   "name": "shaircast",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "So your iPhone can play music all around your house",
   "main": "server.js",
   "scripts": {
@@ -9,8 +9,8 @@
   "author": "Nicko Guyer",
   "license": "MIT",
   "dependencies": {
-    "airtunes": "^0.1.7",
-    "nodetunes": "^0.1.2",
-    "speaker": "^0.2.5"
+    "airtunes": "git://github.com/microadam/node_airtunes.git#master",
+    "nodetunes": "git://github.com/gpjt/nodetunes.git#master",
+    "speaker": "^0.3.0"
   }
 }
