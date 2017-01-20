@@ -11,7 +11,7 @@ I use a couple of Raspberry Pis plugged into speakers, running [shairport-sync](
 ##How do I get it?
 You will need Node.js. And a computer. Hopefully you have one of those.
 
-> Note: Because of a project dependency, for now shaircast only works on Node.js 0.10.x. Hopefully in the future it will also work on Node.js 0.12.x.
+> Note: Currently the LTS version of Node.js is supported (6.9.x). Installing shaircast successfully on a linux based system is likely to require **libasound2-dev** and **libavahi-compat-libdnssd-dev**. On a Raspberry Pi you can install those packages via *sudo apt-get install libavahi-compat-libdnssd-dev libasound2-dev*.
 
 First, get the code from GitHub:
 
