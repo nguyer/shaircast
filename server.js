@@ -2,49 +2,104 @@
 
 var fs = require("fs");
 var path = require("path");
-var AirTunesServer = require("nodetunes");
-var airtunes = require("airtunes");
-
 var config = JSON.parse(fs.readFileSync("config.json"));
-var server = new AirTunesServer({ serverName : config.groupName });
-var endpoints = config.endpoints;
-var devices;
-var currentStream;
+
+var AirTunesServer = require("nodetunes");
+var server = new AirTunesServer({
+	serverName: config.groupName
+});
+
+var AirplaySplitter = require("./airplay-splitter");
+var airplay = new AirplaySplitter(config.endpoints);
+
+/********** AIRPLAY BRIDGE **********/
 
 server.on("clientConnected", function(stream) {
 	console.log("clientConnected");
-	devices = [];
-	endpoints.forEach(function(host) {
-		devices.push(airtunes.add(host));
-	});
-	currentStream = stream;
-	stream.pipe(airtunes);
+	try {
+		airplay.startStreaming(stream);
+	} catch(err) {
+		console.log("clientConnected error: " + err);
+	}
 });
 
-server.on("clientDisconnected", function() {
+server.on("clientDisconnected", function(client) {
 	console.log("clientDisconnected");
-	currentStream.unpipe();
-	airtunes.stopAll(function() {
-		console.log("All devices stopped")
-	});
+	try {
+		airplay.stopStreaming();
+	} catch(err) {
+		console.log("clientDisconnected error: " + err);
+	}
 });
 
 server.on("error", function(err) {
-	console.log("Error: " + err.message );
+	console.log("Error: " + err.message);
 });
 
 server.on("metadataChange", function(metadata) {
-	console.log("Now playing \"" + metadata.minm + "\" by " + metadata.asar + " from \"" + metadata.asal + "\"");
+	console.log("metadataChange");
+	try {
+		airplay.updateMetadata(metadata.minm, metadata.asar, metadata.asal);
+	} catch(err) {
+		console.log("metadataChange error: " + err);
+	}
 });
 
 server.on("volumeChange", function(volume) {
-	volume = (volume + 30) / 30 * 100
-	console.log("volumeChange " + volume);
-	devices.forEach(function(device) {
-		device.setVolume(volume);
-	});
+	console.log("volumeChange");
+	try {
+		airplay.setVolume(volume);
+	} catch(err) {
+		console.log("volumeChange error: " + err);
+	}
 });
 
 server.start();
 
 console.log(config.groupName + " started");
+
+/******* REMOTE CONTROL ********/
+
+var express = require('express'),
+	app = express(),
+	port = process.env.PORT || 5010;
+
+app.get('/speakers/:name/enable', function(req, res) {
+	var name = req.params.name;
+	try {
+		airplay.enableSpeaker(name);
+		res.send('Speaker ' + name + ' enabled');
+	} catch(err) {
+		res.status(400);
+		res.send("Error: " + err);
+	}
+});
+
+app.get('/speakers/:name/disable', function(req, res) {
+	var name = req.params.name;
+	try {
+		airplay.disableSpeaker(name);
+		res.send('Speaker ' + name + ' disabled');
+	} catch(err) {
+		res.status(400);
+		res.send("Error: " + err);
+	}
+});
+
+app.get('/speakers/:name', function(req, res) {
+	try {
+		var name = req.params.name;
+
+		res.setHeader('Content-Type', 'application/json');
+		res.send(JSON.stringify({
+			enabled: airplay.isSpeakerEnabled(name)
+		}));
+	} catch(err) {
+		res.status(400);
+		res.send("Error: " + err);
+	}
+});
+
+app.listen(port);
+
+console.log('Shaircast remote control started on port ' + port);

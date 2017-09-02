@@ -1,7 +1,13 @@
 {
 	"groupName": "All Speakers",
-	"endpoints": [
-		"192.168.1.116",
-		"192.168.1.117"
-	]
+	"endpoints": {
+		"kitchen": {
+			"host": "192.168.1.116",
+			"enabled": true
+		},
+		"living-room": {
+			"host": "192.168.1.117",
+			"enabled": true
+		}
+	}
 }
